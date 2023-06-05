@@ -1,0 +1,548 @@
+openapi: 3.0.3
+info:
+  title: "Projects Summary API"
+  version: "2.0"
+  description: This is the Projects Summary API
+
+tags:
+  - name: ProjectsSummaryV2
+
+paths:
+  /projects/summary:
+    get:
+      tags:
+        - ProjectsSummaryV2
+      operationId: getProjectsSummaryV2
+      summary: The API returns project summary
+      description: |-
+        <b>API Description :</b> This API performs a search on project/engagement data given the search query (q)
+        and fetches the summary including core, geo and current leadership details.<br/>
+        <b>Business Logic/Filter on data:</b> For the specific set of fields, please use the fields parameter
+        with an asterix or the specific field names. All of the fiels in the response are indexed and can be used
+        to filter results <br/>
+        <b>Sourced from :</b> NA <br/><b>Source overview :</b> API Gateway>ES>SnowFlake <br/>
+        <b>Works with 'Try it Out'? :</b> Yes<br/>
+        <b>Application Context/User Context/Both:</b> Application Context<br/>
+        <b>Caching and frequency:</b> No caching, database refresh frequency is every 3 hours starting 00:44 AM EST<br/>
+        <b>Any exceptional scenarios associated to API? :</b> The total no of records displayed are 10 with start
+        record at 1. If you wish to change this, utilize the limit and the offset params<br/>
+        <b>API Security Level :</b>Level 3 (Permissioned)<br/>
+      parameters:
+        - name: q
+          in: query
+          description: Use the 'q' parameter to do a full text search on projects
+          required: true
+          schema:
+            type: string
+        - name: chargeCode
+          in: query
+          description: |-
+            An Engagement identifier. Client or non client engagement code. Client engagement codes are prefixed
+            with an accounting client code and have a numberic sequence as the suffix. e.g. ABC000.
+            Non client engagement code are generally prefix with three letters ZW, ZX, ZY or ZZ and have a numeric sequence
+            as the suffix, e.g.: ZZY000 (Also know as project code and engagement code)
+          schema:
+            type: string
+        - name: leadership.leadershipFmno
+          in: query
+          description: Firm member number of a leader assigned on an engagment/project
+          schema:
+            type: string
+        - name: leadership.leadershipType
+          in: query
+          description: |-
+            Indicates the job role that a firm member is assigned to for an engagement/project
+            Example values: 'ED', 'BD', 'EM', 'DCS', 'Project Manager'
+          schema:
+            type: string
+        - name: activeInactiveFlag
+          in: query
+          description: |-
+            Indicates whether an engagement/Project is still active or Inactive.
+            (Project Status is APPROVED and Completion_Date is null or in future)
+          schema:
+            type: string
+        - name: projectName
+          in: query
+          description: Name of project/engagement
+          schema:
+            type: string
+        - name: projectId
+          in: query
+          description: The unique system generated numeric identifer for the engagement
+          schema:
+            type: integer
+            format: int64
+        - name: projectType
+          in: query
+          description: |-
+            Describes the nature of the work of the engagement typically differentiates between client
+            and non-client engagements/projects
+          schema:
+            type: string
+        - name: engagementCity
+          in: query
+          description: The location where the work is taking place
+          schema:
+            type: string
+        - name: projectActivityCode
+          in: query
+          description: |-
+            Unique identifier for each row in the table. Alphabetic code used to describe the business purpose
+            of an engagement, e.g.: CR (Client Relations)  RE (Recruiting)  TN (Training) etc.
+          schema:
+            type: string
+        - name: projectStatus
+          in: query
+          description: Indicates the status of an engagement/Project eg Approved, Unapproved or Closed
+          schema:
+            type: string
+        - name: projectGocOffice
+          in: query
+          description: Office code where the Project/Engagement is accounted for from a financial/accounting perspective
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: |-
+            Indicates start of record. Start of record by default is from 1.
+            Use this in combination with limit for paginating results
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: |-
+            Indicates no of records to be returned. Default is 10.
+            Use this in combination with offset for paginating results
+          schema:
+            type: integer
+            format: int32
+        - name: sort
+          in: query
+          description: |-
+            Returns the record in sorted order.
+            Allowed value: fieldname asc or fieldname desc
+            (where fieldname can be geoLocationCode, geoLocationName, etc.)
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: fields
+          in: query
+          required: true
+          description: |-
+            Mandatory parameter. Use this to determine the fields returned in the response. Separate the required fields with a comma.
+            Ex: fields=chargeCode,projectId
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: omitNullFields
+          in: query
+          description: |-
+            Use this field to control the null value fields in the response set. It accepts 'true' or 'false'.
+            The default is set to 'true'.
+            'true' indicates that the response set will NOT contain the fields that have null value
+            'false' indicates the response will contain the fields that have the null
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProjectsSummaryResponse'
+        400:
+          description: Bad Request being made.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProjectsSummaryResponse'
+        401:
+          description: Unauthorized Request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProjectsSummaryResponse'
+        404:
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProjectsSummaryResponse'
+        406:
+          description: Input data is in invalid format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProjectsSummaryResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProjectsSummaryResponse'
+
+components:
+  schemas:
+    GetProjectsSummaryResponse:
+      type: object
+      description: Response Model
+      properties:
+        response:
+          $ref: '#/components/schemas/GetProjectsSummaryPayload'
+
+    GetProjectsSummaryPayload:
+      type: object
+      description: Returns Project summary
+      properties:
+        transactionID:
+          description: The transaction Id associated with this data response
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+        noOfRecords:
+          description: Total Number of Records
+          type: integer
+          format: int64
+        apiVersion:
+          description: API version
+          type: string
+        params:
+          $ref: '#/components/schemas/Parameters'
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSummary'
+    Status:
+      description: The overall status of this response
+      type: object
+      properties:
+        httpStatusCode:
+          description: The http status code associated with this response
+          type: integer
+          format: int32
+        message:
+          description: The http status message associated with this response
+          type: string
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      description: optional query parameters
+      type: object
+      properties:
+        subCode:
+          description: The API error code corresponding to this error
+          type: integer
+          format: int32
+        message:
+          description: The API error message corresponding to this error
+          type: string
+        reason:
+          description: The reason for this API error
+          type: string
+    Parameters:
+      description: optional query parameters
+      type: object
+      properties:
+        q:
+          description: q param
+          type: string
+        omitNullFields:
+          description: Omit Null Fields
+          type: string
+        offset:
+          description: Indicates start of record. Start of record by default is from 1. Use this in combination with limit for paginating results
+          type: integer
+          format: int32
+        limit:
+          description: Indicates no of records to be returned. Default is 10. Use this in combination with offset for paginating results
+          type: integer
+          format: int32
+        fields:
+          description: |-
+            Use this to determine the fields returned in the response. Separate the required fields with a comma.
+            Ex: chargeCode,projectType.
+          type: string
+        sort:
+          description: |-
+            Returns the record in sorted order.
+            Allowed value: fieldname asc or fieldname desc
+            (where fieldname can be chargeCode, projectType etc.)
+          type: string
+
+    ProjectSummary:
+      type: object
+      description: projects summary
+      properties:
+        accountingClientCode:
+          description: Will be going to deprecate after FCT go live
+          type: string
+        lastUpdateDate:
+          description: |-
+            Last updated date of the record. Looks at the last update dates from core, geo and leadership sub blocks
+          type: string
+        projectType:
+          description: |-
+            Describes the nature of the work of the engagement.
+            Typically differentiates between client and non-client engagements/projects
+          type: string
+        projectOwnerHrOrg:
+          description: Will be going to deprecate after FCT go live
+          type: string
+        chargecodeType:
+          description: |-
+            Indicates whether a charge code is confirmed  or non confirmed.
+            E.g.: 'NC' is non confirming charge code and 'CC' is confirming charge code.
+            CC where activity code in CE, CS, PB, PE
+            --Use this if you want any external-touching engagements grouped together
+          type: string
+        engagementState:
+          description: The regional governmental area where the work is taking place
+          type: string
+        softOpenDate:
+          description: Soft Open Date
+          type: string
+        partyId:
+          description: Party ID
+          type: integer
+          format: int64
+        localClientId:
+          description: A unique code to identify the local client
+          type: integer
+          format: int64
+        cdmPartyId:
+          description: Provides the corresponding CDM party identifier of an engagement.
+          type: integer
+          format: int64
+        engagementCity:
+          description: The location where the work is taking place
+          type: string
+        projectEndDate:
+          description: Will be going to deprecate after FCT go live
+          type: string
+        activeInactiveFlag:
+          description: |-
+            Indicates whether an engagement/Project is still active or Inactive.
+            (Project Status is APPROVED and Completion_Date is null or in future)
+          type: string
+        projectName:
+          description: Name of project/engagement
+          type: string
+        projectId:
+          description: The unique system generated numeric identifer for the engagement
+          type: integer
+          format: int64
+        facType:
+          description: Will be going to deprecate after FCT go live
+          type: string
+        chargeCode:
+          description: |-
+            An Engagement identifier. Client or non client engagement code. Client engagement codes are prefixed
+            with an accounting client code and have a numberic sequence as the suffix. Eg. ABC000. Non client engagement
+            code are generally prefix with three letters ZW ZX ZY or ZZ and have a numeric sequence as the suffix
+            e.g. ZZY000 (Also know as project code and engagement code)
+          type: string
+        accountingClientName:
+          description: Will be going to deprecate after FCT go live
+          type: string
+        projectActivityCode:
+          description: |-
+            Unique identifier for each row in the table.
+            Alphabetic code used to describe the business purpose of an engagement, e.g,
+            - 'CR' (Client Relations)
+            - 'RE' (Recruiting)
+            - 'TN' (Training)
+            etc.
+          type: string
+        facDetails:
+          description: Will be going to deprecate after FCT go live
+          type: string
+        projectActivityName:
+          description: |-
+            Name used to describe the business purpose of an engagement e.g 'Client Relations' 'Recruiting'  'Training' etc.
+            (Used primarily in Financial Systems).
+          type: string
+        projectStartDate:
+          description: Will be going to deprecate after FCT go live
+          type: string
+        engagementCountryCode:
+          description: The code of the country where the work Is taking place
+          type: string
+        softEndDate:
+          description: Soft End Date
+          type: string
+        projectDepartmentCode:
+          description: Will be going to deprecate after FCT go live
+          type: string
+        linkedChargeCodeFlag:
+          description: Will be going to deprecate after FCT go live
+          type: string
+        projectStatus:
+          description: Indicates the status of an engagement/Project e.g. Approved, Unapproved or Closed
+          type: string
+        localClientName:
+          description: |-
+            A name given to the client for the specific engagement that may or may not be the same
+            as the Accounting (Master) Client Name may be called Confidential may be a variation
+            of the Accounting (Master) Client Name may be a portfolio company joint venture or a subsidiary
+          type: string
+        projectDescription:
+          description: |-
+            Expected impact to the client. often refers to a service line within the description.
+            Sometimes referred to as Confidential
+          type: string
+        completionDate:
+          description: |-
+            The close date for the engagement. Dates from legacy systems (CER/P3FI/ORS) are manipulated by the integration
+            to EBS Project Accounting.
+            Dates in the Datahub reflect dates from EBS Project Accounting and will not match those in the legacy systems
+          type: string
+        projectGocOffice:
+          description: Office code where the Project/Engagement is accounted for from a financial/accounting perspective
+          type: string
+        allowChargesFlag:
+          description: allowChargesFlag
+          type: string
+        billingArrangement:
+          description: billingArrangement
+          type: string
+        billingArrangementTypeCode:
+          description: billingArrangementTypeCode
+          type: string
+        billingArrangementTypeName:
+          description: Will be going to deprecate after FCT go live
+          type: string
+        clientInvestmentPercentage:
+          description: Will be going to deprecate after FCT go live
+          type: number
+          format: double
+        confidentialityFlag:
+          description: confidentialityFlag
+          type: string
+        engagementBaseStatus:
+          description: engagementBaseStatus
+          type: string
+        engagementCustomStatus:
+          description: Will be going to deprecate after FCT go live
+          type: string
+        engagementId:
+          description: Will be going to deprecate after FCT go live
+          type: integer
+          format: int64
+        programName:
+          description: programName
+          type: string
+        projectMasterCode:
+          description: Project Master Code
+          type: string
+        costCenterCode:
+          description: Cost Center Code
+          type: string
+        profitCenterCode:
+          description: Profit Center Code
+          type: string
+        companyCode:
+          description: Company Code
+          type: string
+        emiCode:
+          description: EMI Code
+          type: string
+        emiName:
+          description: EMI Name
+          type: string
+        codeType:
+          description: Distinguishes a 01 code as type WBS, a 02 code as type Asset
+          type: string
+        projectWbsStatus:
+          description: Project Wbs Status
+          type: string
+        projectWbsActivityCode:
+          description: Project Wbs Activity Code
+          type: string
+        projectWbsActivityDesc:
+          description: Project Wbs Activity Desc
+          type: string
+        riskStatus:
+          description: Risk Status
+          type: string
+        projectSysStatus:
+          description: Project SysS tatus
+          type: string
+        wbsConfirmFlag:
+          description: Wbs Confirm Flag
+          type: string
+        allowTimeFlag:
+          description: Allow Time Flag
+          type: string
+        geoLocationId:
+          description: GeoLocation Id
+          type: integer
+          format: int64
+        legacyCodeIdentifier:
+          description: This is the PE code from EBS for a given converted engagement. It will be null for post-go-live new engagements.
+          type: string
+        leadership:
+          type: array
+          items:
+            $ref: '#/components/schemas/Leadership'
+        links:
+          $ref: '#/components/schemas/ProjectLinks'
+
+    Leadership:
+      type: object
+      description: current Leadership details for the project
+      properties:
+        projectLeadershipId:
+          description: Will be going to deprecate after FCT go live
+          type: integer
+          format: int64
+        leadershipType:
+          description: |-
+            Indicates the job role that a firm member is assigned to for an engagement/project
+            Example: 'ED', 'BD', 'EM', 'DCS', 'Project Manager'
+          type: string
+        leadershipFmno:
+          description: Firm member number of a leader assigned on an engagment/project
+          type: string
+        startDate:
+          description: The date on which a firm members role for an assignment to an engagment is schedule to begin
+          type: string
+        endDate:
+          description: The date on which a firm members role for an assignment to an engagment is schedule to end
+          type: string
+        originInstance:
+          description: Origin Instance
+          type: string
+        projectMasterCode:
+          description: Project Master Code
+          type: string
+
+    ProjectLinks:
+      type: object
+      description: ""
+      properties:
+        projectNeeds:
+          $ref: '#/components/schemas/href'
+        self:
+          $ref: '#/components/schemas/href'
+        projectTags:
+          $ref: '#/components/schemas/href'
+        projectAssignments:
+          $ref: '#/components/schemas/href'
+        projectComments:
+          $ref: '#/components/schemas/href'
+
+    href:
+      type: object
+      description: Link to project details
+      properties:
+        href:
+          description: href
+          type: string

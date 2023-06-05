@@ -1,0 +1,457 @@
+openapi: 3.0.3
+info:
+  title: "Person Legal Status API"
+  version: "2.0"
+  description: This is the Person Legal Status API
+
+tags:
+  - name: PersonLegalStatusV2
+
+paths:
+  /person_legal_status:
+    get:
+      tags:
+      - PersonLegalStatusV2
+      operationId: getPersonLegalStatus
+      summary: The API returns person legal status
+      description: |-
+        <b>API Description :</b>This API provides the legal status related information of a person.<br/>
+        <b>Business Logic/Filter on data :</b>For the specific set of fields, please use the fields
+        parameter with an asterix or the specific field names. All of the fields in
+        the response are indexed and can be used to filter results<br/>
+        <b>Source overview: </b> API Gateway>Elastic Search>SnowFlake<br/>
+        <b>Hypermedia Links :</b>  No<br/>
+        <b>Security Level :</b> Level 2 (Permissioned)<br/>
+        <b>Works with ''Try it Out''? :</b> Yes<br/>
+        <b>Application Context/User Context/Both:</b> Application Context<br/>
+        <b>Data refresh frequency :</b>No caching, database refresh frequency is every 30 minutes<br/>
+        <b>Any exceptional scenarios associated to API?:</b> The api accepts the access token/apikey only in the header. The total no of
+        records displayed are 10 with start record at 1. If you wish to change this, utilize the limit and the offset params.<br/>
+      parameters:
+      - name: q
+        in: query
+        description: Use the 'q' parameter to do a full text search on Person Legal Status
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: query
+        description: attachmentId
+        schema:
+          type: string
+      - name: countryCode
+        in: query
+        description: Country Code
+        schema:
+          type: string
+      - name: documentNumber
+        in: query
+        description: Document Number
+        schema:
+          type: string
+      - name: documentType
+        in: query
+        description: Document Type
+        schema:
+          type: string
+      - name: documentTypeName
+        in: query
+        description: Document Type Name
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        description: endDate
+        schema:
+          type: string
+      - name: fmno
+        in: query
+        description: Firm Member's/External workers firm member number. (Unique identifier for business use)
+        schema:
+          type: string
+      - name: workerType
+        in: query
+        description: Indicates a worker type to which a firm member is categorized e.g. (\"Alumni\",\"Non Partner\", \"Partner\"..etc)
+        schema:
+          type: string
+      - name: companyCodeId
+        in: query
+        description: TBA
+        schema:
+          type: string
+      - name: companyCodeName
+        in: query
+        description: Company Code Name
+        schema:
+          type: string
+      - name: companyCodeFromDate
+        in: query
+        description: TBA
+        schema:
+          type: string
+      - name: companyCodeToDate
+        in: query
+        description: TBA
+        schema:
+          type: string
+      - name: fromDate
+        in: query
+        description: The date on which a Firm Member's/External Workers Legal Status is available , This is mapped to issue_date
+        schema:
+          type: string
+      - name: toDate
+        in: query
+        description: toDate
+        schema:
+          type: string
+      - name: isTemporary
+        in: query
+        description: isTemporary
+        schema:
+          type: string
+      - name: isValidated
+        in: query
+        description: isValidated
+        schema:
+          type: string
+      - name: issuePlace
+        in: query
+        description: issuePlace
+        schema:
+          type: string
+      - name: issuingAuthority
+        in: query
+        description: issuingAuthority
+        schema:
+          type: string
+      - name: legalStatusDesc
+        in: query
+        description: legalStatusDesc
+        schema:
+          type: string
+      - name: legalStatusId
+        in: query
+        description: Unique identifier for a person's legal status Id.
+        schema:
+          type: integer
+          format: int64
+      - name: legalStatusName
+        in: query
+        description: Name of the legal relationship between a person and a state
+        schema:
+          type: string
+      - name: personLegalStatusId
+        in: query
+        description: Unique identifier for a person's legal status record.
+        schema:
+          type: integer
+          format: int64
+      - name: primary
+        in: query
+        description: primary
+        schema:
+          type: string
+      - name: temporaryId
+        in: query
+        description: Temporary Id
+        schema:
+          type: string
+      - name: territoryCode
+        in: query
+        description: The code of the country that the person's legal status is associated to
+        schema:
+          type: string
+      - name: caseNumber
+        in: query
+        description: caseNumber
+        schema:
+          type: string
+      - name: visaProgramStartDate
+        in: query
+        description: visaProgramStartDate
+        schema:
+          type: string
+      - name: visaProgramEndDate
+        in: query
+        description: visaProgramEndDate
+        schema:
+          type: string
+      - name: updateDate
+        in: query
+        description: updateDate
+        schema:
+          type: string
+      - name: lastUpdateDate
+        in: query
+        description: lastUpdateDate
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Indicates start of record. Start of record by default is from 1. Use this in combination with limit for paginating results
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: Indicates no of records to be returned. Default is 10. Use this in combination with offset for paginating results
+        schema:
+          type: integer
+          format: int32
+      - name: fields
+        in: query
+        description: 'Use this to determine the fields returned in the response. Separate the required fields with a comma.
+          Ex: fields=legalStatusName,countryCode,workerType.
+          If not passed, all the available fields will be returned'
+        required: true
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: omitNullFields
+        in: query
+        description: Use this field to control the null value fields in the response
+          set. It accepts 'true' or 'false'. The default is set to 'true'. true indcates
+          that the response set will not contain the fields that have null value and
+          false indicates the response will contain the fields that have the null
+          values
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: |-
+          Returns the record in sorted order.
+          Allowed value: fieldname asc or fieldname desc
+          (where fieldname can be countryId, countryCode, etc.)
+        schema:
+          type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPersonLegalStatusResponse'
+        400:
+          description: Bad Request being made.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPersonLegalStatusResponse'
+        401:
+          description: Unauthorized Request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPersonLegalStatusResponse'
+        404:
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPersonLegalStatusResponse'
+        406:
+          description: Input data is in invalid format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPersonLegalStatusResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPersonLegalStatusResponse'
+
+components:
+  schemas:
+    GetPersonLegalStatusResponse:
+      description: Response Model
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+
+    Response:
+      description: Returns person legal status
+      type: object
+      properties:
+        transactionID:
+          description: The transaction Id associated with this data response
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+        noOfRecords:
+          description: Total Number of Records
+          type: integer
+          format: int64
+        apiVersion:
+          description: API version
+          type: string
+        params:
+          $ref: '#/components/schemas/Parameters'
+        person_legal_status:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonLegalStatus'
+    Status:
+      description: The overall status of this response
+      type: object
+      properties:
+        httpStatusCode:
+          description: The http status code associated with this response
+          type: integer
+          format: int32
+        message:
+          description: The http status message associated with this response
+          type: string
+        error:
+          $ref: '#/components/schemas/Error'
+
+    Error:
+      description: optional query parameters
+      type: object
+      properties:
+        subCode:
+          description: The API error code corresponding to this error
+          type: integer
+          format: int32
+        message:
+          description: The API error message corresponding to this error
+          type: string
+        reason:
+          description: The reason for this API error
+          type: string
+
+    Parameters:
+      description: optional query parameters
+      type: object
+      properties:
+        q:
+          type: string
+          description: q param
+        omitNullFields:
+          type: string
+          description: Omit Null Fields
+        offset:
+          type: integer
+          format: int32
+          description: Indicates start of record. Start of record by default is from 1. Use this in combination with limit for paginating results
+        limit:
+          type: integer
+          format: int32
+          description: Indicates no of records to be returned. Default is 10. Use this in combination with offset for paginating results
+        fields:
+          type: string
+          description: |-
+            Use this to determine the fields returned in the response. Separate the required fields with a comma.
+            Ex: fields=workerType, countryCode, legalStatusDesc.
+            If not passed, all the available fields will be returned
+        sort:
+          description: |-
+            Returns the record in sorted order.
+            Allowed value: fieldname asc or fieldname desc
+            (where fieldname can be countryId, countryCode, etc.)
+          type: string
+
+    PersonLegalStatus:
+      description: person legal status
+      type: object
+      properties:
+        personLegalStatusId:
+          description: personLegalStatusId
+          type: integer
+          format: int64
+        countryCode:
+          description: countryCode
+          type: string
+        documentNumber:
+          description: documentNumber
+          type: string
+        documentType:
+          description: documentType
+          type: string
+        documentTypeName:
+          description: documentTypeName
+          type: string
+        fmno:
+          description: fmno
+          type: string
+        workerType:
+          description: workerType
+          type: string
+        companyCode:
+          description: companyCode
+          type: string
+        companyCodeId:
+          description: companyCodeId
+          type: string
+        companyCodeName:
+          description: companyCodeName
+          type: string
+        companyCodeFromDate:
+          description: companyCodeFromDate
+          type: string
+        companyCodeToDate:
+          description: companyCodeToDate
+          type: string
+        isTemporary:
+          description: isTemporary
+          type: string
+        isValidated:
+          description: isValidated
+          type: string
+        issuePlace:
+          description: issuePlace
+          type: string
+        issuingAuthority:
+          description: issuingAuthority
+          type: string
+        legalStatusId:
+          description: legalStatusId
+          type: integer
+          format: int64
+        legalStatusName:
+          description: legalStatusName
+          type: string
+        legalStatusDesc:
+          description: legalStatusDesc
+          type: string
+        primary:
+          description: primary
+          type: string
+        temporaryId:
+          description: temporaryId
+          type: string
+        attachmentId:
+          description: attachmentId
+          type: string
+        territoryCode:
+          description: territoryCode
+          type: string
+        fromDate:
+          description: fromDate
+          type: string
+        toDate:
+          description: toDate
+          type: string
+        endDate:
+          description: endDate
+          type: string
+        caseNumber:
+          description: caseNumber
+          type: string
+        visaProgramStartDate:
+          description: visaProgramStartDate
+          type: string
+        visaProgramEndDate:
+          description: visaProgramEndDate
+          type: string
+        updateDate:
+          description: updateDate
+          type: string
+        lastUpdateDate:
+          description: lastUpdateDate
+          type: string
