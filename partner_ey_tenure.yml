@@ -1,0 +1,94 @@
+openapi: 3.0.2
+info:
+  title: "Partner EY Tenure API"
+  version: "1.0"
+paths:
+  /partner_ey_tenure:
+    get:
+      tags:
+        - EYTenure
+      description: "This api provides the Year End tenure for partners.<br/><b>Business Logic/Filter on data :</b> None.<br/><b>Source overview : </b> APIx>Solr>Datahub<br/><b>Hypermedia Links :</b>  No<br/><b>Security Level :</b> Level 3 (Permissioned)<br/><b>Works with 'Try it Out'? :</b> Yes<br/><b>Application Context/User Context/Both:</b> Application Context<br/><b>Data refresh frequency :</b> 3 hours<br/><b>Caching enabled and time to live :</b> None<br/><b>Any exceptional scenarios associated to API?:</b> The api accepts the access token/apikey only in the header.<br/>"
+      summary: The API returns Year End Tenure for Partners
+      operationId: getYearEndTenure
+      parameters:
+        - description: "Use the 'q' parameter to search for year end tenure for a given fmno.<br/><b>-</b>For details for a record use q=fmno:05444<br/><b>-</b>For multiple fields separate the fields by AND. For Ex: fmno:05444 AND personEyTenureId:46814<br/>"
+          in: query
+          name: q
+          required: true
+          type: string
+        - description: Indicates start of record. Start of record by default is from 1. Use this in combination with limit for paginating results
+          in: query
+          name: offset
+          required: false
+          type: string
+        - description: Indicates no of records to be returned. Default is 10.Use this in combination with offset for paginating results
+          in: query
+          name: limit
+          required: false
+          type: string
+        - description: "Use this to determine the fields returned in the response. Separate the required fields with a comma. Ex: fields=fmno,eyEvalYear,preEyTenYear. If not passed, all the available fields will be returned"
+          in: query
+          name: fields
+          required: false
+          type: string
+        - description: "Use this field to control the null value fields in the response set. It accepts 'true' or 'false'. The default is set to 'true'. true indcates that the response set will not contain the fields that have null value and false indicates the response will contain the fields that have the null values"
+          in: query
+          name: omitNullFields
+          required: false
+          type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema: '#/components/schemas/Response'                
+        404:
+          description: Resource not found
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+components:
+  schemas:
+    Response: 
+      type: object
+      description: Projects summary
+      properties:
+        Response:
+          description: Returns list of Year End tenure for partners
+          properties:
+            noOfRecords:
+              description: Total Number of Records
+              type: string
+            apiVersion:
+              description: API version
+              type: string
+            params:
+              description: parameters
+              properties:
+                q:
+                  description: "Use the 'q' parameter to search for year end tenure for a given fmno.<br/><b>-</b>For details for a record use q=fmno:05444<br/><b>-</b>For multiple fields separate the fields by AND. For Ex: fmno:05444 AND personEyTenureId:46814<br/>"
+                  type: string
+                limit:
+                  description: Indicates no of records to be returned. Default is 10.Use this in combination with offset for paginating results
+                  type: string
+                offset:
+                  description: Indicates start of record. Start of record by default is from 1. Use this in combination with limit for paginating results
+                  type: string
+                fields:
+                  description: "Use this to determine the fields returned in the response. Separate the required fields with a comma. Ex: fields=fmno,personEyTenureId,evaluationYear. If not passed, all the available fields will be returned"
+                  type: string
+            partner_ey_tenure:
+              properties:
+                fmno:
+                  description: Firm Members/External workers firm member number
+                  type: string
+                personEyTenureId:
+                  description: " Unique Id to identify the EY tenure reocrds."
+                  type: number
+                evaluationYear:
+                  description: Year for which tenure is calculated
+                  type: string
+                eyTenure:
+                  description: Year end tenure in Year+Months format
+                  type: string
